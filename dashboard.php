@@ -7,6 +7,12 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$flash = '';
+if (isset($_SESSION['flash'])) {
+    $flash = $_SESSION['flash'];
+    unset($_SESSION['flash']);
+}
+
 $userId = $_SESSION['user_id'];
 
 $today = date('Y-m-d');
@@ -53,6 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $status = 'Pending';
 
         $conn->query("INSERT INTO leave_requests (user_id, leave_date, leave_type, status) VALUES ($userId, '$leave_date', '$leave_type', '$status')");
+       $_SESSION['flash'] = "request sent successfully.";
         header("Location: dashboard.php");
         exit();
     }
@@ -94,6 +101,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </nav>
 
     <div class="container my-5">
+        <?php if (!empty($flash)): ?>
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        <?= htmlspecialchars($flash) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
         <h2 class="text-center mb-4">Welcome! Today's Attendance</h2>
 
         <!-- Attendance Status -->
@@ -138,21 +151,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <script>
-    <?php if ($clockedIn): ?>
-    var clockInTime = new Date("<?= $clockInTime ?>");
+   <script>
+<?php if ($clockedIn && !$clockedOut): ?>
+    var clockInTime = new Date("<?= date('Y-m-d\TH:i:s', strtotime($clockInTime)) ?>");
 
     function updateTime() {
         var now = new Date();
-        var elapsedTime = new Date(now - clockInTime);
-        var hours = elapsedTime.getUTCHours();
-        var minutes = elapsedTime.getUTCMinutes();
-        var seconds = elapsedTime.getUTCSeconds();
-        document.getElementById('elapsed-time').innerText = hours + "h " + minutes + "m " + seconds + "s";
+        var diffMs = now - clockInTime;
+        var totalSeconds = Math.floor(diffMs / 1000);
+
+        var hours = Math.floor(totalSeconds / 3600);
+        var minutes = Math.floor((totalSeconds % 3600) / 60);
+        var seconds = totalSeconds % 60;
+
+        document.getElementById('elapsed-time').innerText =
+            hours + "h " + minutes + "m " + seconds + "s";
     }
-    setInterval(updateTime, 1000);
-    <?php endif; ?>
-    </script>
+
+    updateTime();
+    setInterval(updateTime, 1000); 
+<?php endif; ?>
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

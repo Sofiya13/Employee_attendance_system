@@ -91,7 +91,7 @@ function calculateTotalTime($clockInTime, $clockOutTime) {
             padding: 6px 12px;
             border-radius: 5px;
             text-transform: capitalize;
-            display: inline-block;
+            /* display: inline-block; */
         }
 
         .status.present {
@@ -146,7 +146,7 @@ function calculateTotalTime($clockInTime, $clockOutTime) {
 </head>
 <body>
     <div class="container">
-        <h2>Attendance, Leave, and Holiday Report</h2>
+        <h2>Attendance Report</h2>
         
         <!-- Attendance History -->
         <h4>Attendance History</h4>

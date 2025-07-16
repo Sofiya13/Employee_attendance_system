@@ -34,7 +34,7 @@ if (isset($_GET['leave_delete'])) {
 
 
 // ADD employee 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_employee'])) {
     $name = $_POST['name'];
     $email = $_POST['email'];
     $pass = $_POST['password'];
@@ -107,12 +107,12 @@ $leaveRequests = $conn->query("SELECT lr.id, lr.user_id, u.name, lr.leave_date, 
     </nav>
     <div class="container my-5">
         <h2 class="text-center mb-4">Admin Dashboard</h2>
-<?php if (!empty($flash)): ?>
-    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-        <?= htmlspecialchars($flash) ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
+        <?php if (!empty($flash)): ?>
+        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+            <?= htmlspecialchars($flash) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php endif; ?>
 
         <!-- Employee Section -->
         <div class="card mb-5 text-center">
@@ -159,7 +159,7 @@ $leaveRequests = $conn->query("SELECT lr.id, lr.user_id, u.name, lr.leave_date, 
                         <input type="password" name="password" class="form-control" placeholder="Password" required>
                     </div>
                     <div class="col-md-3">
-                        <button type="submit" class="btn btn-success">Add Employee</button>
+                        <button type="submit"  name="add_employee" class="btn btn-success">Add Employee</button>
                     </div>
                 </form>
 
